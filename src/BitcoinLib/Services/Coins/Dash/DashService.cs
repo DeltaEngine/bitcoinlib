@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using BitcoinLib.CoinParameters.Dash;
 using BitcoinLib.Requests.SignRawTransaction;
+using BitcoinLib.Responses;
 using BitcoinLib.RPC.Specifications;
 using BitcoinLib.Services.Coins.Bitcoin;
 using Newtonsoft.Json.Linq;
@@ -76,6 +78,20 @@ namespace BitcoinLib.Services.Coins.Dash
 		public List<ListUnspentDashResponse> ListUnspentPrivateSend()
 			=> _rpcConnector.MakeRequest<List<ListUnspentDashResponse>>(RpcMethods.listunspent,
 				1, 9999999, new List<string>());
+
+		public GetRawTransactionDashResponse GetRawTransactionDash(string txId, int verbose = 1)
+		{
+			if (verbose == 0)
+				return new GetRawTransactionDashResponse
+				{
+					Hex = _rpcConnector.MakeRequest<string>(RpcMethods.getrawtransaction, txId,
+						verbose)
+				};
+			if (verbose == 1)
+				return _rpcConnector.MakeRequest<GetRawTransactionDashResponse>(
+					RpcMethods.getrawtransaction, txId, verbose);
+			throw new Exception("Invalid verbose value: " + verbose + " in GetRawTransaction()!");
+		}
 
 		public DashConstants.Constants Constants => DashConstants.Constants.Instance;
 
