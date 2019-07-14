@@ -103,5 +103,26 @@ namespace BitcoinLib.Services.Coins.Dash
 				result.Add(data.Value.ToObject<MasternodeResponse>());
 			return result;
 		}
+
+		/// <summary>
+		/// Returns a list of active llqm quorums, most recent ones first for each type.
+		/// https://github.com/dashpay/dips/blob/master/dip-0006.md#current-llmq-types
+		/// </summary>
+		public List<QuorumListEntryResponse> GetQuorumList()
+		{
+			var response = _rpcConnector.MakeRequest<JObject>(RpcMethods.quorum, "list");
+			var result = new List<QuorumListEntryResponse>();
+			foreach (var type in response)
+			foreach (var data in type.Value)
+				result.Add(
+					new QuorumListEntryResponse { Hash = data.Value<string>(), Type = type.Key });
+			return result;
+		}
+
+		public QuorumInfoResponse GetQuorumInfo(string hash, int quorumType = 1)
+		{
+			return
+				_rpcConnector.MakeRequest<QuorumInfoResponse>(RpcMethods.quorum, "info", quorumType, hash);
+		}
 	}
 }

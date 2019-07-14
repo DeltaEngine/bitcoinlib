@@ -129,6 +129,8 @@ namespace BitcoinLib.RPC.Specifications
 				//2018-03-02: added getaddressbalance (needs addressindex = 1 in dash.conf)
 				getaddressbalance,
 				//2018-07-23: Masternode support, usually list command is used
-				masternode
+				masternode,
+				//2019-07-14: Quorum support 0.14.0.x, list and info are the most useful
+				quorum
     }
 }
